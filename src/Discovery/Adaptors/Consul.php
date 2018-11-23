@@ -6,12 +6,12 @@
  * Time: 11:32 AM
  */
 
-namespace Carno\Cluster\Discover\Adaptors;
+namespace Carno\Cluster\Discovery\Adaptors;
 
 use Carno\Channel\Chan;
 use Carno\Channel\Channel;
 use Carno\Channel\Worker;
-use Carno\Cluster\Discover\Discovered;
+use Carno\Cluster\Discovery\Discovered;
 use Carno\Cluster\Managed;
 use Carno\Consul\Discovery;
 use Carno\Consul\Types\Agent;

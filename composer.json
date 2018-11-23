@@ -11,13 +11,21 @@
     "carno-php/log-slim": "^1.0"
   },
   "suggest": {
-    "carno-php/dns": "Service discovering via dns",
-    "carno-php/config": "Service discovering via config",
-    "carno-php/consul": "Service discovering via consul"
+    "carno-php/dns": "Services discovery via dns",
+    "carno-php/consul": "Services discovery via consul",
+    "carno-php/config": "Services discovery via config"
   },
   "autoload": {
     "psr-4": {
       "Carno\\Cluster\\": "src"
+    }
+  },
+  "require-dev": {
+    "carno-php/config": "^1.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Carno\\Cluster\\Tests\\": "tests"
     }
   },
   "minimum-stability": "dev",

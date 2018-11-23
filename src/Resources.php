@@ -9,7 +9,7 @@
 namespace Carno\Cluster;
 
 use Carno\Cluster\Chips\InitializeTips;
-use Carno\Cluster\Discover\Discovered;
+use Carno\Cluster\Classify\Classified;
 use function Carno\Coroutine\all;
 use Carno\Promise\Promised;
 
@@ -18,9 +18,9 @@ class Resources
     use InitializeTips;
 
     /**
-     * @var Discovered
+     * @var Classified
      */
-    private $discover = null;
+    private $classify = null;
 
     /**
      * @var bool
@@ -44,11 +44,11 @@ class Resources
 
     /**
      * Resources constructor.
-     * @param Discovered $discovered
+     * @param Classified $classify
      */
-    public function __construct(Discovered $discovered)
+    public function __construct(Classified $classify)
     {
-        $this->discover = $discovered;
+        $this->classify = $classify;
     }
 
     /**
@@ -64,11 +64,12 @@ class Resources
     }
 
     /**
+     * @param string $scene
      * @param string $group
      * @param string $server
      * @param Managed $managed
      */
-    public function initialize(string $group, string $server, Managed $managed) : void
+    public function initialize(string $scene, string $group, string $server, Managed $managed) : void
     {
         if (!$this->started) {
             $this->paused[] = func_get_args();
@@ -81,13 +82,13 @@ class Resources
             return;
         }
 
-        $this->waits[$sk] = $wait = $this->discover->attach($group, $server, $managed);
+        $this->waits[$sk] = $wait = $this->classify->discovery($scene)->attach($group, $server, $managed);
 
         $wait->then(function () use ($sk) {
             unset($this->waits[$sk]);
         });
 
-        $this->loaded[$sk] = [$group, $server];
+        $this->loaded[$sk] = [$scene, $group, $server];
 
         $this->waiting($sk, $managed);
     }
@@ -108,7 +109,7 @@ class Resources
         $pending = [];
 
         foreach ($this->loaded as $gss) {
-            $pending[] = $this->discover->detach(...$gss);
+            $pending[] = $this->classify->discovery(array_shift($gss))->detach(...$gss);
         }
 
         return all(...$pending);

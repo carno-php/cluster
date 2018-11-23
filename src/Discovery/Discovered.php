@@ -6,7 +6,7 @@
  * Time: 11:52 AM
  */
 
-namespace Carno\Cluster\Discover;
+namespace Carno\Cluster\Discovery;
 
 use Carno\Cluster\Managed;
 use Carno\Promise\Promised;

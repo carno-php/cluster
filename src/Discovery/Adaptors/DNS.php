@@ -6,9 +6,9 @@
  * Time: 11:35 AM
  */
 
-namespace Carno\Cluster\Discover\Adaptors;
+namespace Carno\Cluster\Discovery\Adaptors;
 
-use Carno\Cluster\Discover\Discovered;
+use Carno\Cluster\Discovery\Discovered;
 use Carno\Cluster\Managed;
 use function Carno\Coroutine\go;
 use Carno\DNS\DNS as NSR;
