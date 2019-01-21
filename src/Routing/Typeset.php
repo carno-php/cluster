@@ -39,6 +39,16 @@ class Typeset implements Typed
     }
 
     /**
+     * @param string $typing
+     * @return static
+     */
+    public function forget(string $typing) : self
+    {
+        unset($this->table[$typing]);
+        return $this;
+    }
+
+    /**
      * @param string ...$tags
      * @return Endpoint[]
      */
