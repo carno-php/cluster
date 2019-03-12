@@ -11,6 +11,7 @@ namespace Carno\Cluster;
 use Carno\Cluster\Chips\InitializeTips;
 use Carno\Cluster\Classify\Classified;
 use function Carno\Coroutine\all;
+use Carno\Promise\Promise;
 use Carno\Promise\Promised;
 
 class Resources
@@ -76,9 +77,7 @@ class Resources
             return;
         }
 
-        $sk = sprintf('%s:%s', $group ?: 'service', $server);
-
-        if (isset($this->loaded[$sk])) {
+        if (isset($this->loaded[$sk = $this->sk($group, $server)])) {
             return;
         }
 
@@ -102,16 +101,43 @@ class Resources
     }
 
     /**
+     * @param string $group
+     * @param string $server
+     * @return Promised
+     */
+    public function forget(string $group, string $server) : Promised
+    {
+        if (is_null($gss = $this->loaded[$sk = $this->sk($group, $server)] ?? null)) {
+            return Promise::rejected();
+        }
+
+        unset($this->loaded[$sk]);
+
+        return $this->classify->discovery(array_shift($gss))->detach(...$gss);
+    }
+
+    /**
      * @return Promised
      */
     public function release() : Promised
     {
         $pending = [];
 
-        foreach ($this->loaded as $gss) {
+        foreach ($this->loaded as $sk => $gss) {
+            unset($this->loaded[$sk]);
             $pending[] = $this->classify->discovery(array_shift($gss))->detach(...$gss);
         }
 
         return all(...$pending);
+    }
+
+    /**
+     * @param string $group
+     * @param string $server
+     * @return string
+     */
+    private function sk(string $group, string $server) : string
+    {
+        return sprintf('%s:%s', $group ?: 'service', $server);
     }
 }
